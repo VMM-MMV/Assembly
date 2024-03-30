@@ -32,26 +32,14 @@ end:
     mov rsi, strr
     mov rdx, 10
     syscall
-    
+
     mov rax, 60
     mov rdi, 0
     syscall
 
 _start:
     mov rax, 1234
-    ; mov r9, 48
-    ; mov r10, 49
-    ; mov [strr], r9
-    ; mov [strr+1], r10
     call int_to_string
-
-    
-    
-    ; mov rax, 1                                ; Prepare syscall number for write
-    ; mov rdi, 1                            ; Prepare file descriptor for stdout
-    ; mov rsi, msg                         ; Load the address of text1 into rsi (inner loop output)
-    ; mov rdx, len  
-    
     call end
 
 int_to_string:
@@ -66,6 +54,7 @@ int_to_string:
     inc qword [counter]
     cmp rax, 0
     jne int_to_string
+    
     mov qword [counter], 0
     jmp reversed_array_to_str
 
