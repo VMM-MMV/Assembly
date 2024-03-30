@@ -34,8 +34,5 @@ _start:
     mov rsi, input_buffer
     mov rdx, [number_of_bytes]
     syscall
-     
 
     call end
-
-
