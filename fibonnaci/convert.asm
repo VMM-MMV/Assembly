@@ -1,12 +1,12 @@
 section .data
-    amount dq 8  ; Number of Fibonacci numbers to calculate
+    amount dq 20  ; Number of Fibonacci numbers to calculate
     n dq 0
     nx dq 1
-    arr dq 10 dup(0)
+    arr dq 8 dup(0)
     counter dq 0
-    reversed_counter dq 9
-    ; strr dd 10 dup(0)
+    reversed_counter dq 7
     strr dd 0
+
 section .text
     global _start
 
@@ -21,7 +21,8 @@ fibonacci:
     mov r10, [n]
     add r10, [nx]
     mov [nx], r10
-    mov [n], r9    
+    mov [n], r9 
+
     dec qword [amount]  ; Decrement the loop counter
     cmp qword [amount], 0
     jne fibonacci
@@ -32,12 +33,13 @@ exit_fibonacci:
     mov rax, [n]
     call int_to_string
 
+;rax is quotient and value that you want to divide
+;rdx is reminder
 int_to_string:
-    ; mov rax, 1234 rax is quotient  
-    mov rdx, 0  ; rdx is reminder
+    mov rdx, 0
     mov rbx, 10
 
-    div rbx
+    div rbx                     ; divides rax by dbx
 
     mov r9, [counter]
     mov [arr+r9*8], rdx
