@@ -1,36 +1,11 @@
 section .data
-    input_buffer times 100 db 0
     arr dq 10 dup(0)
     counter dq 0
     reversed_counter dq 9
     strr dd 0
 
 section .text
-    global _start
-
-_start:
-    mov rax, 0
-    mov rdi, 0
-    mov rsi, input_buffer
-    mov rdx, 100
-    syscall
-
-    dec rax
-
-    call int_to_string
-
-    mov r9, strr
-    
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, r9
-    mov rdx, 10
-    syscall
-
-end:
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+    global int_to_string
 
 int_to_string:
     mov rdx, 0
@@ -58,4 +33,5 @@ reversed_array_to_str:
     inc qword [counter]
     cmp qword [reversed_counter], -1
     jne reversed_array_to_str
+    mov rax, strr
     ret

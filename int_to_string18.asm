@@ -13,24 +13,21 @@ _start:
     mov rdi, 0
     mov rsi, input_buffer
     mov rdx, 100
-    syscall
 
-    dec rax
+    mov r8, rax
+    xor rax, rax
+
+    mov rsi, input_buffer       ; Source index
+    mov rdi, rax                  ; Destination index
+    mov rcx, r8                    ; Copy n bytes/times
+    rep movsb
 
     call int_to_string
 
-    mov r9, strr
-    
     mov rax, 1
     mov rdi, 1
-    mov rsi, r9
+    mov rsi, strr
     mov rdx, 10
-    syscall
-
-end:
-    mov rax, 60
-    xor rdi, rdi
-    syscall
 
 int_to_string:
     mov rdx, 0
@@ -58,4 +55,5 @@ reversed_array_to_str:
     inc qword [counter]
     cmp qword [reversed_counter], -1
     jne reversed_array_to_str
+    mov rax, strr
     ret
