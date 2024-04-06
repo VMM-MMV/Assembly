@@ -53,6 +53,6 @@ find_occurance:
 
 replace_str:
     mov r11, [replace_with_buffer]
-    mov [input_buffer+r8], r11b  ; Replace the character
+    mov [input_buffer+r8], r11b
     inc qword [counter] 
     jmp find_occurance
