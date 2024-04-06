@@ -8,11 +8,15 @@ section .text
 
 _start:
     call get_random_string
+    mov r8, [len]
+    inc r8
+    mov byte [string+r8], 10
+    inc r8
 
     mov rax, 1     ; Syscall for write
     mov rdi, 1     ; Standard output
     mov rsi, string   ; Value to print
-    mov rdx, [len]     ; Length (adjust for more digits)
+    mov rdx, r8    ; Length (adjust for more digits)
     syscall
 
     mov rax, 60
