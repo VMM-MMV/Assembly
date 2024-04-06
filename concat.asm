@@ -5,18 +5,16 @@ section .data
     second_word_buffer times 100 db 0
 
 section .bss
-    first_word_len resd 1
-    second_word_len resd 1
     result resb 200
 
 section .text
     global _start
 
 _start:
-    mov rax, 1                                ; Prepare syscall number for write
-    mov rdi, 1                            ; Prepare file descriptor for stdout
-    mov rsi, msg                         ; Load the address of text1 into rsi (inner loop output)
-    mov rdx, len                            ; Load the length of text1 into rdx
+    mov rax, 1                              
+    mov rdi, 1
+    mov rsi, msg
+    mov rdx, len
     syscall
 
     mov rax, 0
@@ -37,12 +35,11 @@ _start:
     
     mov rsi, first_word_buffer       ; Source index
     mov rdi, result                  ; Destination index
-    mov rcx, r8                      ; Copy hello_len bytes
+    mov rcx, r8                      ; Copy n bytes/times
     rep movsb
     
-    dec rdi
-
     mov rsi, second_word_buffer    
+    dec rdi
     mov rcx, r9
     rep movsb
 
@@ -56,6 +53,6 @@ _start:
     syscall
 
 end:
-    mov rax, 60  ; System call for exit
-    xor rdi, rdi ; Exit code 0
+    mov rax, 60
+    xor rdi, rdi
     syscall
