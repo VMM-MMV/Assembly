@@ -1,30 +1,52 @@
 section .data
-    hello db "Hello", 0
-    hello_len equ $-hello 
-    
-    world db "World", 0  
-    world_len equ $-world 
+    msg db "Add Input!", 0xA  ; Message to print (0xA is a newline)
+    len equ $-msg                ; Length of the message
+    first_word_buffer times 100 db 0
+    second_word_buffer times 100 db 0
 
-    result db 12  ; Allocate enough space (hello_len + world_len + null terminator) 
+section .bss
+    first_word_len resd 1
+    second_word_len resd 1
+    result resb 200
 
 section .text
     global _start
 
 _start:
-    mov rsi, hello       ; Source index
-    mov rdi, result      ; Destination index
-    mov rcx, hello_len   ; Copy hello_len bytes
-    rep movsb            
+    mov rax, 1                                ; Prepare syscall number for write
+    mov rdi, 1                            ; Prepare file descriptor for stdout
+    mov rsi, msg                         ; Load the address of text1 into rsi (inner loop output)
+    mov rdx, len                            ; Load the length of text1 into rdx
+    syscall
 
-    mov rsi, world    
-    mov rcx, world_len
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, first_word_buffer
+    mov rdx, 100
+    syscall
+    
+    mov r8, rax
+
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, second_word_buffer
+    mov rdx, 100
+    syscall
+    
+    mov r9, rax
+    
+    mov rsi, first_word_buffer       ; Source index
+    mov rdi, result                  ; Destination index
+    mov rcx, r8                      ; Copy hello_len bytes
+    rep movsb
+    
+    dec rdi
+
+    mov rsi, second_word_buffer    
+    mov rcx, r9
     rep movsb
 
-    mov r8, hello_len
-    add r8, world_len
-    mov byte [result+r8], 10
-    inc r8
-    mov byte [result+r8], 0
+    add r8, r9
     inc r8
     
     mov rax, 1
