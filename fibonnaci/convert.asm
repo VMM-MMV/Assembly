@@ -1,6 +1,6 @@
 section .data
-    amount dq 20  ; Number of Fibonacci numbers to calculate
-    n dq 0
+    amount dq 5  ; Number of Fibonacci numbers to calculate
+    n dq 1
     nx dq 1
     arr dq 8 dup(0)
     counter dq 0

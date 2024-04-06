@@ -1,83 +1,80 @@
-section .data
-    arr dq 10 dup(0)
-    counter dq 0
-    reversed_counter dq 9
-    ; strr dd 10 dup(0)
-    strr dd 0
+; Global entry point for linking purposes
+global main
 
+; External function declarations 
+extern printf
+extern puts
+extern atoi
+
+; Data section
 section .text
-    global _start
-     
-print1:
-    push qword 49
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, rsp
-    mov rdx, 1
-    syscall
-    add rsp, 8
 
-    push qword 10
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, rsp
-    mov rdx, 1
-    syscall
-    add rsp, 8
-    ret
+main:
+    ; Save callee-saved registers (convention for preserving values)
+    push    r12
+    push    r13
+    push    r14
 
-end:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, strr
-    mov rdx, 10
-    syscall
+    ; Argument validation
+    cmp     rdi, 3              ; Verify three arguments (argc)
+    jne     error1
 
-    mov rax, 60
-    mov rdi, 0
-    syscall
+    ; Store arguments
+    mov     r12, rsi            ; Load argv into r12
 
-_start:
-    mov rax, 1234
-    call int_to_string
-    call end
+    ; Calculate x^y 
+    mov     rdi, [r12+16]       ; Load argv[2] (exponent) into rdi
+    call    atoi                ; Convert exponent to integer (result in eax)
+    cmp     eax, 0              ; Check for negative exponents
+    jl      error2
+    mov     r13d, eax           ; Store exponent in r13d
 
-int_to_string:
-    ; mov rax, 1234 rax is quotient  
-    mov rdx, 0  ; rdx is reminder
-    mov rbx, 10
+    mov     rdi, [r12+8]        ; Load argv[1] (base) into rdi
+    call    atoi                ; Convert base to integer (result in eax) 
+    mov     r14d, eax           ; Store base in r14d  
 
-    div rbx
+    mov     eax, 1              ; Initialize result to 1
 
-    mov r9, [counter]
-    mov [arr+r9*8], rdx
-    inc qword [counter]
-    cmp rax, 0
-    jne int_to_string
-    
-    mov qword [counter], 0
-    jmp reversed_array_to_str
+check:
+    test    r13d, r13d          ; Check if exponent is zero
+    jz      gotit               ; Jump if done
 
-reversed_array_to_str:
-    mov r9, [reversed_counter]
-    mov r9, [arr+r9*8]
-    add r9, 48
-    mov r10, [counter]
-    mov [strr+r10], r9
-    dec qword [reversed_counter]
-    inc qword [counter]
-    cmp qword [reversed_counter], -1
-    jne reversed_array_to_str
-    jmp end
+    imul    eax, r14d           ; Multiply current result by base
+    dec     r13d                ; Decrement exponent
+    jmp     check               ; Continue loop
 
-; reversed_array_to_str:
-;     mov r9, [counter]
-;     mov r9, [arr+r9*8]
-;     add r9, 48
-;     mov r10, [reversed_counter]
-;     mov [strr+r10], r9
-;     dec qword [reversed_counter]
-;     inc qword [counter]
-;     cmp qword [reversed_counter], -1
-;     jne reversed_array_to_str
-;     jmp end
+gotit: 
+    ; Print final result
+    mov     rdi, answer         ; Format string for output
+    movsxd  rsi, eax            ; Sign-extend result into rsi (for 64-bit)
+    xor     rax, rax            ; Zero out rax (required for call)
+    call    printf              
+
+jmp done  
+
+error1:
+    ; Error handling - Incorrect argument count
+    mov     rdi, badArgumentCount 
+    call    puts
+
+jmp done  
+
+error2:
+    ; Error handling - Negative exponent
+    mov     rdi, negativeExponent 
+    call    puts
+
+done:
+    ; Restore registers and exit
+    pop     r14
+    pop     r13
+    pop     r12
+    ret 
+
+; Data section (messages and format strings)
+answer:
+    db      "%d", 10, 0         ; Format string for the result
+badArgumentCount:
+    db      "Requires exactly two arguments", 10, 0 
+negativeExponent:
+    db      "The exponent may not be negative", 10, 0 

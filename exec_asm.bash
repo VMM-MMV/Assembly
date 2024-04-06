@@ -28,3 +28,6 @@ else
     # Run the executable
     ./"$1"
 fi
+
+
+# nasm -felf64 test.asm && gcc test.o -pie -no-pie && ./a.out
