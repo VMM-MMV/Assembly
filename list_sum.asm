@@ -29,51 +29,35 @@ _start:
     mov r12, rax
     call string_to_array
 
-    mov r10, [arr_len]
-    call bubble_sort
+    dec qword [arr_len]
+    mov r14, 0
+    mov r15, 0
+    call get_arr_sum
 
-    call print_arr
+    ; call print_arr
 
     call end
 
-bubble_sort:
-    ; r8 is i
-    ; r9 is j
-    ; r10 is size of array
-    mov r9, -1
-    xor r8, r8
-    inner_loop:
-        inc r9
+get_arr_sum:
+    add r14, [arr+r15*8]
+    inc r15
+    cmp r15, [arr_len]
+    jle get_arr_sum
 
-        mov r11, r10
-        dec r11
-        sub r11, r8
-        cmp r9, r11
-        jge outer_loop
+    xor rdx, rdx
+    mov rax, r14
 
-        mov r11, [arr+((r9+1)*8)]
-        mov r12, [arr+(r9*8)]
-        ; cmp [arr+(r9*8)], r11
-        cmp r12, r11
-        jg swap
+    call clean_int_to_string
+    call int_to_string
 
-        jmp inner_loop
+    mov qword [strr+10], 10
 
-    outer_loop:
-        mov r9, -1
-        inc r8
-        cmp r8, r10
-        jne inner_loop
-
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, strr
+    mov rdx, 11
+    syscall
     ret
-
-swap:
-    mov r12, [arr+(r9*8)]
-    mov r11, [arr+((r9+1)*8)]
-
-    mov [arr+((r9+1)*8)], r12
-    mov [arr+(r9*8)], r11
-    jmp inner_loop
 
 string_to_array:
     dec r12

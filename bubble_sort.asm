@@ -31,14 +31,16 @@ bubble_sort:
     inner_loop:
         inc r9
 
-        mov r11, r10-1
+        mov r11, r10
         dec r11
         sub r11, r8
         cmp r9, r11
         jge outer_loop
 
         mov r11, [arr+((r9+1)*8)]
-        cmp [arr+r9], r11
+        mov r12, [arr+(r9*8)]
+
+        cmp r12, r11
         jg swap
 
         jmp inner_loop
@@ -46,7 +48,7 @@ bubble_sort:
     outer_loop:
         mov r9, -1
         inc r8
-        cmp r8, r10-1
+        cmp r8, r10
         jne inner_loop
 
     ret
