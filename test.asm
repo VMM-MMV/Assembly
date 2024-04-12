@@ -1,63 +1,190 @@
-; ; Global entry point for linking purposes
-; global main
-
-; ; External function declarations 
-; extern printf
-; extern puts
-; extern atoi
-
-; section .data
-;     msg db "Add Input!", 0xA  ; Message to print (0xA is a newline)
-;     len equ $-msg                ; Length of the message
-;     first_word_buffer times 100 db 0
-
-; ; Data section
-; section .text
-
-; main:
-;     mov rax, 1                              
-;     mov rdi, 1
-;     mov rsi, msg
-;     mov rdx, len
-;     syscall
-
-;     mov rax, 0
-;     mov rdi, 0
-;     mov rsi, first_word_buffer
-;     mov rdx, 100
-;     syscall
-    
-;     ; mov eax, rax
-
-; gotit: 
-;     ; Print final result
-;     mov     rdi, answer         ; Format string for output
-;     movsxd  rsi, eax            ; Sign-extend result into rsi (for 64-bit)
-;     xor     rax, rax            ; Zero out rax (required for call)
-;     call    printf              
-
-; ; Data section (messages and format strings)
-; answer:
-;     db      "%d", 10, 0         ; Format string for the result
-; badArgumentCount:
-;     db      "Requires exactly two arguments", 10, 0 
-; negativeExponent:
-;     db      "The exponent may not be negative", 10, 0 
-
-
-
 section .data
-    my_integer dd 12345       ; The integer you want to convert
+    input_buffer times 100 db 0
+    
+    arr dq 10 dup(0)
+    arr_len dq 0
+    arr_counter dq 0
+    str_arr dq 10 dup(0)
+    counter dq 0
+    reversed_counter dq 9
+    strr dd 0
 
 section .text
     global _start
 
-INCLUDE 'int_to_string.asm' 
+end:
+    mov rax, 60
+    mov rdi, 0
+    syscall
+
 _start:
-    mov rax, my_integer       ; Load the integer into rax 
-    call int_to_string        ; Call the conversion function
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, input_buffer
+    mov rdx, 100
+    syscall
+
+    dec rax
+    mov r11, rax
+    mov r12, rax
+    call string_to_array
+
+    ; mov r14, [counter]
+    ; mov [arr_len], r14
+    ; mov r14, 0
+    ; mov r15, 0
+    call print_arr
+
+    call end
+
+; get_average:
+;     add r14, [arr+r15*8]
+;     inc r15
+;     cmp r15, [arr_len]
+;     jne get_average
+
+;     mov rax, r14
+;     div r15
+;     mov r13, rdx
+
+;     call int_to_string
+
+;     mov rax, 1
+;     mov rdi, 1
+;     mov rsi, strr
+;     mov rdx, 10
+;     syscall
+
+;     mov rax, r13
+;     call int_to_string
+
+;     mov rax, 1
+;     mov rdi, 1
+;     mov rsi, strr
+;     mov rdx, 10
+;     syscall
+
+string_to_array:
+    dec r12
+    cmp r12, -1
+    je rett 
+
+    cmp r12, 0
+    je add_to_array
+
+    cmp byte [input_buffer+r12-1], 32
+    je add_to_array
+
+    cmp r12, 0
+    jne string_to_array
+    ret
+
+rett:
+    ret
+
+add_to_array:
+    call convert_string
+    dec r11
+
+    mov r14, [arr_counter]
+    mov [arr+r14*8], r8
+    inc qword [arr_counter]
+    jmp string_to_array
+
+convert_string:   
+    ; r11 is end of string  
+    ; r12 start of the string     
+    mov r9, 1           ; multiplier
+    mov r8, 0           ; this would be the result int
+    call convert_loop
+    ret
+
+convert_loop:
+    mov r10b, [input_buffer+r11-1]
     
+    sub r10, 48
+    imul r10, r9
+    add r8, r10
+
+    imul r9, 10
+    dec r11
+
+    cmp r11, r12
+    jne convert_loop
+    ret
+
+print_arr:
+    mov r15, [arr_counter]
+    dec r15
+    mov rax, [arr+r15*8]
+
+    call int_to_string
+
     mov rax, 1
     mov rdi, 1
-    mov rsi, rax
+    mov rsi, strr
     mov rdx, 10
+    syscall
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, space
+    mov rdx, 1
+    syscall
+
+    dec qword [arr_counter]
+    cmp qword [arr_counter], 0
+    jne print_arr
+    ret
+
+space:
+    db " "
+
+int_to_string:
+    ; call clean_int_to_string
+    mov rdx, 0
+    mov rbx, 10
+
+    div rbx                     ; divides rax by dbx
+
+    mov r9, [counter]
+    mov [str_arr+r9*8], rdx
+    inc qword [counter]
+    cmp rax, 0
+    jne int_to_string
+    
+    mov qword [counter], 0
+    jmp reversed_array_to_str
+    ret
+
+reversed_array_to_str:
+    mov r9, [reversed_counter]
+    mov r9, [str_arr+r9*8]
+    cmp r9, 0
+    je continue
+
+
+    add r9, 48
+    mov r10, [counter]
+    mov [strr+r10], r9
+    dec qword [reversed_counter]
+    inc qword [counter]
+    cmp qword [reversed_counter], -1
+    jne reversed_array_to_str
+    mov rax, strr
+    ret
+
+continue:
+    dec qword [reversed_counter]
+    inc qword [counter]
+    jmp reversed_array_to_str
+
+clean_int_to_string:
+    mov qword [counter], 0
+    mov qword [reversed_counter], 9
+    mov qword [strr+r15], 0
+    mov qword [str_arr+r15*8], 0
+    inc r15
+    cmp r15, 9
+    jne clean_int_to_string
+    ret

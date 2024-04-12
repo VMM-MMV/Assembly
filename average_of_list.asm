@@ -2,6 +2,7 @@ section .data
     input_buffer times 100 db 0
     
     arr dq 10 dup(0)
+    arr_len dq 0
     arr_counter dq 0
     str_arr dq 10 dup(0)
     counter dq 0
@@ -28,9 +29,36 @@ _start:
     mov r12, rax
     call string_to_array
 
-    call print_arr
+    dec qword [arr_len]
+    mov r14, 0
+    mov r15, 0
+    call get_average
+
+    ; call print_arr
 
     call end
+
+get_average:
+    add r14, [arr+r15*8]
+    inc r15
+    cmp r15, [arr_len]
+    jle get_average
+
+    xor rdx, rdx
+    mov rax, r14
+    div r15
+
+    call clean_int_to_string
+    call int_to_string
+
+    mov qword [strr+10], 10
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, strr
+    mov rdx, 11
+    syscall
+    ret
 
 string_to_array:
     dec r12
@@ -57,6 +85,8 @@ add_to_array:
     mov r14, [arr_counter]
     mov [arr+r14*8], r8
     inc qword [arr_counter]
+    mov r14, [arr_counter]
+    mov [arr_len], r14
     jmp string_to_array
 
 convert_string:   
@@ -86,9 +116,7 @@ print_arr:
     dec r15
     mov rax, [arr+r15*8]
 
-    mov qword [counter], 0
-    mov qword [reversed_counter], 9
-    call clean_arrs
+    call clean_int_to_string
     call int_to_string
 
     mov rax, 1
@@ -97,11 +125,10 @@ print_arr:
     mov rdx, 10
     syscall
 
-    ; mov r15, 32
     mov rax, 1
     mov rdi, 1
     mov rsi, space
-    mov rdx, 2
+    mov rdx, 1
     syscall
 
     dec qword [arr_counter]
@@ -110,7 +137,7 @@ print_arr:
     ret
 
 space:
-    db " ", 0
+    db " "
 
 int_to_string:
     mov rdx, 0
@@ -150,10 +177,14 @@ continue:
     inc qword [counter]
     jmp reversed_array_to_str
 
-clean_arrs:
-    mov qword [strr+r15], 0
-    mov qword [str_arr+r15*8], 0
-    inc r15
-    cmp r15, 9
-    jne clean_arrs
-    ret
+clean_int_to_string:
+    mov r15, 0
+    clean_loop:
+        mov qword [counter], 0
+        mov qword [reversed_counter], 9
+        mov qword [strr+r15], 0
+        mov qword [str_arr+r15*8], 0
+        inc r15
+        cmp r15, 9
+        jne clean_loop
+        ret
