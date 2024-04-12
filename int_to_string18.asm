@@ -45,9 +45,14 @@ int_to_string:
     jmp reversed_array_to_str
     ret
 
+    
 reversed_array_to_str:
     mov r9, [reversed_counter]
     mov r9, [arr+r9*8]
+    
+    cmp r9, 0
+    je continue
+
     add r9, 48
     mov r10, [counter]
     mov [strr+r10], r9
@@ -57,3 +62,8 @@ reversed_array_to_str:
     jne reversed_array_to_str
     mov rax, strr
     ret
+
+continue:
+    dec qword [reversed_counter]
+    inc qword [counter]
+    jmp reversed_array_to_str

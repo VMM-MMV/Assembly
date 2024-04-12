@@ -1,8 +1,12 @@
 section .data
     input_buffer times 100 db 0
+    
     arr dq 10 dup(0)
     arr_counter dq 0
-    ; int_word dq dup(0)
+    str_arr dq 10 dup(0)
+    counter dq 0
+    reversed_counter dq 9
+    strr dd 0
 
 section .text
     global _start
@@ -23,6 +27,8 @@ _start:
     mov r11, rax
     mov r12, rax
     call string_to_array
+
+    call print_arr
 
     call end
 
@@ -74,4 +80,80 @@ convert_loop:
     cmp r11, r12
     jne convert_loop
     ret
+
+print_arr:
+    mov r15, [arr_counter]
+    dec r15
+    mov rax, [arr+r15*8]
+
+    mov qword [counter], 0
+    mov qword [reversed_counter], 9
+    call clean_arrs
+    call int_to_string
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, strr
+    mov rdx, 10
+    syscall
+
+    ; mov r15, 32
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, space
+    mov rdx, 2
+    syscall
+
+    dec qword [arr_counter]
+    cmp qword [arr_counter], 0
+    jne print_arr
+    ret
+
+space:
+    db " ", 0
+
+int_to_string:
+    mov rdx, 0
+    mov rbx, 10
+
+    div rbx                     ; divides rax by dbx
+
+    mov r9, [counter]
+    mov [str_arr+r9*8], rdx
+    inc qword [counter]
+    cmp rax, 0
+    jne int_to_string
     
+    mov qword [counter], 0
+    jmp reversed_array_to_str
+    ret
+
+reversed_array_to_str:
+    mov r9, [reversed_counter]
+    mov r9, [str_arr+r9*8]
+    cmp r9, 0
+    je continue
+
+
+    add r9, 48
+    mov r10, [counter]
+    mov [strr+r10], r9
+    dec qword [reversed_counter]
+    inc qword [counter]
+    cmp qword [reversed_counter], -1
+    jne reversed_array_to_str
+    mov rax, strr
+    ret
+
+continue:
+    dec qword [reversed_counter]
+    inc qword [counter]
+    jmp reversed_array_to_str
+
+clean_arrs:
+    mov qword [strr+r15], 0
+    mov qword [str_arr+r15*8], 0
+    inc r15
+    cmp r15, 9
+    jne clean_arrs
+    ret
