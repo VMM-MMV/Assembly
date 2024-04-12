@@ -19,14 +19,14 @@ _start:
     mov rdx, 100
     syscall
 
-    
+    mov r11, rax 
+    dec r11
     call convert_string
 
     call end
 
-convert_string:
-    mov r11, rax 
-    dec r11             ; the lenght of the string
+convert_string:   
+    ; r11 is lenght of string          
     mov r9, 1           ; multiplier
     mov r8, 0           ; this would be the result int
     call convert_loop
