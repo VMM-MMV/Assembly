@@ -1,7 +1,8 @@
 section .data
     string times 100 dq 0  ; Holds the current LCG state
-    len dq 20
+    len dq 30
     counter dq 0
+    my_input db 0
 
 section .text
     global _start
