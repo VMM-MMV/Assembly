@@ -6,6 +6,7 @@ section .text
     extern concat
     extern len_of_input
     extern remove_space
+    extern random_string
 
 end:
     mov rax, 60
@@ -80,6 +81,10 @@ _start:
     cmp byte [input_buffer], "3"
     je remove_space_jmp
 
+    cmp byte [input_buffer], "4"
+    je random_string_jmp
+    
+
     jmp end
 
 concat_jmp:
@@ -95,4 +100,9 @@ len_of_input_jmp:
 remove_space_jmp:
     call clear_screen
     call remove_space
+    jmp retry
+
+random_string_jmp:
+    call clear_screen
+    call random_string
     jmp retry

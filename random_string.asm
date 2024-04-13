@@ -1,28 +1,26 @@
 section .data
-    string times 100 dq 0  ; Holds the current LCG state
+    string times 100 dq 0
     len dq 30
     counter dq 0
     my_input db 0
 
 section .text
-    global _start
+    global random_string
 
-_start:
+random_string:
     call get_random_string
     mov r8, [len]
     inc r8
     mov byte [string+r8], 10
     inc r8
 
-    mov rax, 1     ; Syscall for write
-    mov rdi, 1     ; Standard output
-    mov rsi, string   ; Value to print
-    mov rdx, r8    ; Length (adjust for more digits)
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, string
+    mov rdx, r8
     syscall
 
-    mov rax, 60
-    mov rdi, 0
-    syscall
+    ret
 
 get_random_string:
     call get_random_character
@@ -45,7 +43,4 @@ get_random_character:
     div r8
     add rdx, 97
     xor rax, rax
-    ret
-
-rett:
     ret
