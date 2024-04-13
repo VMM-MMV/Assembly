@@ -1,5 +1,5 @@
 section .data
-    msg db "Add Input!", 0xA  ; Message to print (0xA is a newline)
+    msg db "Concat Your Words!", 0xA  ; Message to print (0xA is a newline)
     len equ $-msg                ; Length of the message
     first_word_buffer times 100 db 0
     second_word_buffer times 100 db 0
@@ -51,8 +51,5 @@ concat:
     mov rsi, result
     mov rdx, r8
     syscall
+    ret
 
-end:
-    mov rax, 60
-    xor rdi, rdi
-    syscall

@@ -1,13 +1,5 @@
 section .data
     input_buffer times 100 db 0
-    
-    arr dq 10 dup(0)
-    arr_len dq 0
-    arr_counter dq 0
-    str_arr dq 10 dup(0)
-    counter dq 0
-    reversed_counter dq 9
-    strr dd 0
 
 section .text
     global _start
@@ -31,7 +23,40 @@ start_msg:
     db "9. Reversing a list of numbers backwards", 10
     db "10. Calculating the sum of the elements in a list of numbers", 10
 
+retry_msg:
+    db 10, "Again? Press ENTER!", 10
+
+retry:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, retry_msg
+    mov rdx, 21
+    syscall
+
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, input_buffer
+    mov rdx, 100
+    syscall
+    
+    jmp _start
+
+screen_clear_buffer:
+    db 10, 10, 10, 10, 10, 10, 10, 10, 10
+    db 10, 10, 10, 10, 10, 10, 10, 10, 10
+    db 10, 10, 10, 10, 10, 10, 10, 10, 10
+    db 10, 10, 10, 10, 10, 10, 10, 10, 10
+    
+clear_screen:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, screen_clear_buffer
+    mov rdx, 35
+    syscall
+    ret
+
 _start:
+    call clear_screen
     mov rax, 1
     mov rdi, 1
     mov rsi, start_msg
@@ -45,6 +70,11 @@ _start:
     syscall
     
     cmp byte [input_buffer], "1"
-    je concat
+    je concat_jmp
 
-    call end
+    jmp end
+
+concat_jmp:
+    call clear_screen
+    call concat
+    jmp retry
