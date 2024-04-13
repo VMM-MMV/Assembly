@@ -8,6 +8,7 @@ section .text
     extern remove_space
     extern random_string
     extern replace_str
+    extern average_of_list
 
 end:
     mov rax, 60
@@ -88,6 +89,10 @@ _start:
     cmp byte [input_buffer], "5"
     je replace_str_jmp
 
+    cmp byte [input_buffer], "7"
+    je average_of_list_jmp
+    
+
     jmp end
 
 concat_jmp:
@@ -113,4 +118,9 @@ random_string_jmp:
 replace_str_jmp:
     call clear_screen
     call replace_str
+    jmp retry
+
+average_of_list_jmp:
+    call clear_screen
+    call average_of_list
     jmp retry

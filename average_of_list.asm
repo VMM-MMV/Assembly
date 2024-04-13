@@ -9,15 +9,19 @@ section .data
     reversed_counter dq 9
     strr dd 0
 
-section .text
-    global _start
+    start_msg db "Add your list!", 10
+    start_msg_len equ $-start_msg
 
-end:
-    mov rax, 60
-    mov rdi, 0
+section .text
+    global average_of_list
+
+average_of_list:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, start_msg
+    mov rdx, start_msg_len
     syscall
 
-_start:
     mov rax, 0
     mov rdi, 0
     mov rsi, input_buffer
@@ -34,7 +38,7 @@ _start:
     mov r15, 0
     call get_average
 
-    call end
+    ret
 
 get_average:
     add r14, [arr+r15*8]
