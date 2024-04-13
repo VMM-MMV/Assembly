@@ -18,6 +18,14 @@ if [ "$1" = "-d" ]; then
 
     # Debug the executable with GDB
     gdb "./$1"
+elif [ "$1" = "-m" ]; then
+    shift
+    # Assemble the assembly code
+    nasm -f elf64 -g "$1.asm" -o "$1.o"
+    nasm -f elf64 -g "concat.asm" -o "concat.o"
+    # Link the object files
+    gcc -g -no-pie -nostartfiles "$1.o" concat.o -o "$1"
+    ./"$1"
 else
     # Assemble the assembly code
     nasm -f elf64 -g "$1.asm" -o "$1.o"

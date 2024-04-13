@@ -11,6 +11,7 @@ section .data
 
 section .text
     global _start
+    extern concat
 
 end:
     mov rax, 60
@@ -43,12 +44,7 @@ _start:
     mov rdx, 100
     syscall
     
-    mov r8, rax
-
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, input_buffer
-    mov rdx, r8
-    syscall
+    cmp byte [input_buffer], "1"
+    je concat
 
     call end

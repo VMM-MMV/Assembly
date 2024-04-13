@@ -8,9 +8,9 @@ section .bss
     result resb 200
 
 section .text
-    global _start
+    global concat
 
-_start:
+concat:
     mov rax, 1                              
     mov rdi, 1
     mov rsi, msg
