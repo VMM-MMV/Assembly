@@ -8,6 +8,7 @@ section .text
     extern remove_space
     extern random_string
     extern replace_str
+    extern compare_numbers
     extern average_of_list
     extern sort_list_desc
     extern reverse_arr
@@ -25,7 +26,7 @@ start_msg:
     db "2. Removing spaces from a string", 10
     db "3. Generating a random string", 10
     db "4. Replacing all occurrences of a character with another character in a string", 10
-    db "5. Removing spaces from a string", 10
+    db "5. Determining the larger of two numbers", 10
     db "6. Determining the arithmetic mean of a list of numbers", 10
     db "7. Sorting a list of numbers in descending order", 10
     db "8. Reversing a list of numbers backwards", 10
@@ -92,6 +93,9 @@ _start:
     cmp byte [input_buffer], "4"
     je replace_str_jmp
 
+    cmp byte [input_buffer], "5"
+    je compare_numbers_jmp
+
     cmp byte [input_buffer], "6"
     je average_of_list_jmp
 
@@ -129,6 +133,11 @@ random_string_jmp:
 replace_str_jmp:
     call clear_screen
     call replace_str
+    jmp retry
+
+compare_numbers_jmp:
+    call clear_screen
+    call compare_numbers
     jmp retry
 
 average_of_list_jmp:

@@ -2,8 +2,8 @@ section .data
     first_word_buffer times 100 db 0
 
 section .text
-    global _start
-
+    ; global _start
+    global compare_numbers
 start_msg:
     db "Compare 2 numbers!", 10
 
@@ -18,14 +18,14 @@ reset:
 
     ret
 
-_start:
-    call compare_numbers
-    mov rax, 60
-    mov rdi, 0
-    syscall
+; _start:
+;     call compare_numbers
+;     mov rax, 60
+;     mov rdi, 0
+;     syscall
 
 compare_numbers:
-    ; call reset
+    call reset
     mov rax, 1                              
     mov rdi, 1
     mov rsi, start_msg
@@ -46,7 +46,7 @@ compare_numbers:
     mov r13, r8
 
 
-    ; call reset
+    call reset
 
     mov rax, 0
     mov rdi, 0
