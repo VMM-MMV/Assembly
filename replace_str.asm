@@ -3,11 +3,19 @@ section .data
     replace_buffer times 10 db 0
     replace_with_buffer times 10 db 0
     counter dq 0
+    start_msg db "Replace Your Strings Brother!", 10
+    start_msg_len equ $-start_msg
 
 section .text
-    global _start
+    global replace_str
 
-_start:
+replace_str:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, start_msg
+    mov rdx, start_msg_len
+    syscall
+
     mov rax, 0
     mov rdi, 0
     mov rsi, input_buffer
@@ -36,22 +44,20 @@ _start:
     mov rdx, r10
     syscall
 
-    mov rax, 60
-    mov rdi, 0
-    syscall
+    ret
 
 find_occurance:
     mov r8, [counter]
     mov r9, [replace_buffer]
     cmp [input_buffer+r8], r9b
-    je replace_str
+    je replace
 
     inc qword [counter]
     cmp [counter], r10
     jl find_occurance
     ret
 
-replace_str:
+replace:
     mov r11, [replace_with_buffer]
     mov [input_buffer+r8], r11b
     inc qword [counter] 

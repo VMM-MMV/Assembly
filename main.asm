@@ -7,6 +7,7 @@ section .text
     extern len_of_input
     extern remove_space
     extern random_string
+    extern replace_str
 
 end:
     mov rax, 60
@@ -83,7 +84,9 @@ _start:
 
     cmp byte [input_buffer], "4"
     je random_string_jmp
-    
+
+    cmp byte [input_buffer], "5"
+    je replace_str_jmp
 
     jmp end
 
@@ -105,4 +108,9 @@ remove_space_jmp:
 random_string_jmp:
     call clear_screen
     call random_string
+    jmp retry
+
+replace_str_jmp:
+    call clear_screen
+    call replace_str
     jmp retry
