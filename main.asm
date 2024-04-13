@@ -4,6 +4,7 @@ section .data
 section .text
     global _start
     extern concat
+    extern len_of_input
 
 end:
     mov rax, 60
@@ -38,7 +39,7 @@ retry:
     mov rsi, input_buffer
     mov rdx, 100
     syscall
-    
+
     jmp _start
 
 screen_clear_buffer:
@@ -72,9 +73,17 @@ _start:
     cmp byte [input_buffer], "1"
     je concat_jmp
 
+    cmp byte [input_buffer], "2"
+    je len_of_input_jmp
+
     jmp end
 
 concat_jmp:
     call clear_screen
     call concat
+    jmp retry
+
+len_of_input_jmp:
+    call clear_screen
+    call len_of_input
     jmp retry

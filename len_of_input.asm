@@ -4,11 +4,19 @@ section .data
     counter dq 0
     reversed_counter dq 9
     strr dd 0
+    start_msg db "Find out looong yourr word is!", 10
+    start_msg_len equ $-start_msg
 
 section .text
-    global _start
+    global len_of_input
 
-_start:
+len_of_input:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, start_msg
+    mov rdx, start_msg_len
+    syscall
+
     mov rax, 0
     mov rdi, 0
     mov rsi, input_buffer
@@ -19,18 +27,15 @@ _start:
 
     call int_to_string
 
-    mov r9, strr
-    
+    mov r8, [counter]
+    mov qword [strr+r8], 10
+
     mov rax, 1
     mov rdi, 1
-    mov rsi, r9
-    mov rdx, 10
+    mov rsi, strr
+    mov rdx, 11
     syscall
-
-end:
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+    ret
 
 int_to_string:
     int_to_str_array:
