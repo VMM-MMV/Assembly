@@ -6,6 +6,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+nasm -f elf64 -g "int_to_string.asm" -o "int_to_string.o"
 # Check if debug flag is provided
 if [ "$1" = "-d" ]; then
     # Debug flag is provided, shift the arguments
@@ -31,7 +32,7 @@ else
     nasm -f elf64 -g "$1.asm" -o "$1.o"
 
     # Link the object file
-    gcc -g -no-pie -nostartfiles "$1.o" -o "$1"
+    gcc -g -no-pie -nostartfiles "$1.o" int_to_string.o -o "$1"
 
     # Run the executable
     ./"$1"

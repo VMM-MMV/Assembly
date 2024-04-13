@@ -113,28 +113,30 @@ convert_loop:
     ret
 
 print_arr:
-    mov r15, [arr_counter]
-    dec r15
-    mov rax, [arr+r15*8]
+    mov qword [arr_counter], 0
+    print_loop:
+        
+        mov r9, [arr_counter]
+        mov rax, [arr+r9*8]
+        call int_to_string
+        mov rax, [strr]
 
-    call clean_int_to_string
-    call int_to_string
+        mov rax, 1
+        mov rdi, 1
+        mov rsi, strr
+        mov rdx, 10
+        syscall
 
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, strr
-    mov rdx, 10
-    syscall
+        mov rax, 1
+        mov rdi, 1
+        mov rsi, space
+        mov rdx, 1
+        syscall
 
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, space
-    mov rdx, 1
-    syscall
-
-    dec qword [arr_counter]
-    cmp qword [arr_counter], 0
-    jne print_arr
+        inc qword [arr_counter]
+        mov r9, [arr_counter]
+        cmp qword r9, [arr_len]
+        jne print_loop
     ret
 
 space:

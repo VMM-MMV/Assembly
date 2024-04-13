@@ -57,23 +57,22 @@ bubble_sort:
 
     ret
 
-swap:
-    mov r12, [arr+r9*8]
-    mov r11, [arr+((r9+1)*8)]
+    swap:
+        mov r12, [arr+r9*8]
+        mov r11, [arr+((r9+1)*8)]
 
-    mov [arr+((r9+1)*8)], r12
-    mov [arr+r9*8], r11
-    jmp inner_loop
+        mov [arr+((r9+1)*8)], r12
+        mov [arr+r9*8], r11
+        jmp inner_loop
 
 print_arr:
-    ; r8 len
-    ; r9 counter
     mov qword [arr_counter], 0
     print_loop:
         
         mov r9, [arr_counter]
         mov rax, [arr+r9*8]
         call int_to_string
+        mov rax, [strr]
 
         mov rax, 1
         mov rdi, 1

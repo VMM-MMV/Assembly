@@ -58,55 +58,53 @@ get_average:
     ret
 
 string_to_array:
-    dec r12
-    cmp r12, -1
-    je rett 
+    string_to_array_loop:
+        dec r12
+        cmp r12, -1
+        je rett 
 
-    cmp r12, 0
-    je add_to_array
+        cmp r12, 0
+        je add_to_array
 
-    cmp byte [input_buffer+r12-1], 32
-    je add_to_array
+        cmp byte [input_buffer+r12-1], 32
+        je add_to_array
 
-    cmp r12, 0
-    jne string_to_array
+        cmp r12, 0
+        jne string_to_array_loop
     ret
 
-rett:
-    ret
+    rett:
+        ret
 
-add_to_array:
-    call convert_string
-    dec r11
+    add_to_array:
+        call convert_string
+        dec r11
 
-    mov r14, [arr_counter]
-    mov [arr+r14*8], r8
-    inc qword [arr_counter]
-    mov r14, [arr_counter]
-    mov [arr_len], r14
-    jmp string_to_array
+        mov r14, [arr_counter]
+        mov [arr+r14*8], r8
+        inc qword [arr_counter]
+        mov r14, [arr_counter]
+        mov [arr_len], r14
+        jmp string_to_array
 
-convert_string:   
-    ; r11 is end of string  
-    ; r12 start of the string     
-    mov r9, 1           ; multiplier
-    mov r8, 0           ; this would be the result int
-    call convert_loop
-    ret
-
-convert_loop:
-    mov r10b, [input_buffer+r11-1]
-    
-    sub r10, 48
-    imul r10, r9
-    add r8, r10
-
-    imul r9, 10
-    dec r11
-
-    cmp r11, r12
-    jne convert_loop
-    ret
+    convert_string:   
+        ; r11 is end of string  
+        ; r12 start of the string     
+        mov r9, 1           ; multiplier
+        mov r8, 0           ; this would be the result int
+        convert_loop:
+            mov r10b, [input_buffer+r11-1]
+            
+            sub r10, 48
+            imul r10, r9
+            add r8, r10
+        
+            imul r9, 10
+            dec r11
+        
+            cmp r11, r12
+            jne convert_loop
+        ret
 
 int_to_string:
     int_to_str_array:
