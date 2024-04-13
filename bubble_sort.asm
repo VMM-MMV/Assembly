@@ -1,9 +1,9 @@
 section .data    
     arr dq 1, 4, 3, 2
     ; arr dq 10 dup(0)
+    str_arr dq 10 dup(0)
     arr_len dq 4
     arr_counter dq 0
-    str_arr dq 10 dup(0)
     counter dq 0
     reversed_counter dq 9
     strr dd 0
@@ -19,6 +19,7 @@ end:
 _start:
     mov r10, 4
     call bubble_sort
+    mov r8, 4
     call print_arr
     call end
 
@@ -26,8 +27,11 @@ bubble_sort:
     ; r8 is i
     ; r9 is j
     ; r10 is size of array
+    ; r11, r12 temp
     mov r9, -1
     xor r8, r8
+    xor r11, r11
+    xor r12, r12
     inner_loop:
         inc r9
 
@@ -61,30 +65,33 @@ swap:
     mov [arr+r9*8], r11
     jmp inner_loop
 
-
 print_arr:
-    mov r15, [arr_counter]
-    mov rax, [arr+r15*8]
+    ; r8 len
+    ; r9 counter
+    mov qword [arr_counter], 0
+    print_loop:
+        
+        mov r9, [arr_counter]
+        mov rax, [arr+r9*8]
+        call clean_int_to_string
+        call int_to_string
 
-    call clean_int_to_string
-    call int_to_string
+        mov rax, 1
+        mov rdi, 1
+        mov rsi, strr
+        mov rdx, 10
+        syscall
 
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, strr
-    mov rdx, 10
-    syscall
+        mov rax, 1
+        mov rdi, 1
+        mov rsi, space
+        mov rdx, 1
+        syscall
 
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, space
-    mov rdx, 1
-    syscall
-
-    inc qword [arr_counter]
-    mov r15, [arr_len]
-    cmp [arr_counter], r15
-    jne print_arr
+        inc qword [arr_counter]
+        mov r9, [arr_counter]
+        cmp qword r9, [arr_len]
+        jne print_loop
     ret
 
 space:
@@ -110,14 +117,14 @@ reversed_array_to_str:
     mov r9, [reversed_counter]
     mov r9, [str_arr+r9*8]
     
-    cmp r8, -100
+    cmp r8, -42069
     je is_zero
 
     cmp r9, 0
     jne number_other_than_zero
 
     call continue
-    mov r8, -99
+    mov r8, -42068
     ret
 
 continue:
@@ -127,7 +134,7 @@ continue:
     ret
 
 number_other_than_zero:
-    mov r8, -100
+    mov r8, -42069
     jmp reversed_array_to_str
 
 is_zero:
