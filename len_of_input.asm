@@ -4,17 +4,19 @@ section .data
     counter dq 0
     reversed_counter dq 9
     strr dd 0
-    start_msg db "Find out looong yourr word is!", 10
-    start_msg_len equ $-start_msg
+    start_msg_len dq 0
 
 section .text
     global len_of_input
+
+start_msg:
+    db "Find out looong yourr word is!", 10
 
 len_of_input:
     mov rax, 1
     mov rdi, 1
     mov rsi, start_msg
-    mov rdx, start_msg_len
+    mov rdx, 31
     syscall
 
     mov rax, 0

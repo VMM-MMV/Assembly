@@ -32,10 +32,10 @@ elif [ "$1" = "-m" ]; then
     nasm -f elf64 -g "average_of_list.asm" -o "average_of_list.o"
     nasm -f elf64 -g "sort_list_desc.asm" -o "sort_list_desc.o"
     nasm -f elf64 -g "reverse_arr.asm" -o "reverse_arr.o"
-    reverse_arr
+    nasm -f elf64 -g "list_sum.asm" -o "list_sum.o"
     
     # Link the object files
-    gcc -g -no-pie -nostartfiles "$1.o" concat.o len_of_input.o remove_space.o random_string.o replace_str.o average_of_list.o sort_list_desc.o reverse_arr.o -o "$1"
+    gcc -g -no-pie -nostartfiles "$1.o" concat.o len_of_input.o remove_space.o random_string.o replace_str.o average_of_list.o sort_list_desc.o reverse_arr.o list_sum.o -o "$1"
     ./"$1"
 else
     # Assemble the assembly code

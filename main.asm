@@ -11,6 +11,7 @@ section .text
     extern average_of_list
     extern sort_list_desc
     extern reverse_arr
+    extern list_sum
 
 end:
     mov rax, 60
@@ -19,16 +20,16 @@ end:
     
 start_msg:
     db "Choose Your Poison!", 10, 10
-    db "1. Concatenating two strings", 10
-    db "2. Calculating the length of a string", 10
-    db "3. Removing spaces from a string", 10
-    db "4. Generating a random string", 10
-    db "5. Replacing all occurrences of a character with another character in a string", 10
-    db "6. Removing spaces from a string", 10
-    db "7. Determining the arithmetic mean of a list of numbers", 10
-    db "8. Sorting a list of numbers in descending order", 10
-    db "9. Reversing a list of numbers backwards", 10
-    db "10. Calculating the sum of the elements in a list of numbers", 10
+    db "0. Concatenating two strings", 10
+    db "1. Calculating the length of a string", 10
+    db "2. Removing spaces from a string", 10
+    db "3. Generating a random string", 10
+    db "4. Replacing all occurrences of a character with another character in a string", 10
+    db "5. Removing spaces from a string", 10
+    db "6. Determining the arithmetic mean of a list of numbers", 10
+    db "7. Sorting a list of numbers in descending order", 10
+    db "8. Reversing a list of numbers backwards", 10
+    db "9. Calculating the sum of the elements in a list of numbers", 10
 
 retry_msg:
     db 10, "Again? Press ENTER!", 10
@@ -55,11 +56,11 @@ screen_clear_buffer:
     db 10, 10, 10, 10, 10, 10, 10, 10, 10
     
 clear_screen:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, screen_clear_buffer
-    mov rdx, 35
-    syscall
+    ; mov rax, 1
+    ; mov rdi, 1
+    ; mov rsi, screen_clear_buffer
+    ; mov rdx, 35
+    ; syscall
     ret
 
 _start:
@@ -76,29 +77,29 @@ _start:
     mov rdx, 100
     syscall
     
-    cmp byte [input_buffer], "1"
+    cmp byte [input_buffer], "0"
     je concat_jmp
 
-    cmp byte [input_buffer], "2"
+    cmp byte [input_buffer], "1"
     je len_of_input_jmp
 
-    cmp byte [input_buffer], "3"
+    cmp byte [input_buffer], "2"
     je remove_space_jmp
 
-    cmp byte [input_buffer], "4"
+    cmp byte [input_buffer], "3"
     je random_string_jmp
 
-    cmp byte [input_buffer], "5"
+    cmp byte [input_buffer], "4"
     je replace_str_jmp
 
-    cmp byte [input_buffer], "7"
+    cmp byte [input_buffer], "6"
     je average_of_list_jmp
 
-    cmp byte [input_buffer], "8"
+    cmp byte [input_buffer], "7"
     je sort_list_desc_jmp
 
     cmp byte [input_buffer], "9"
-    je reverse_arr_jmp
+    je list_sum_jmp
 
     jmp end
 
@@ -140,4 +141,9 @@ sort_list_desc_jmp:
 reverse_arr_jmp:
     call clear_screen
     call reverse_arr
+    jmp retry
+
+list_sum_jmp:
+    call clear_screen
+    call list_sum
     jmp retry

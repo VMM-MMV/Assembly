@@ -10,14 +10,18 @@ section .data
     strr dd 0
 
 section .text
-    global _start
+    global list_sum
 
-end:
-    mov rax, 60
-    mov rdi, 0
+start_msg:
+    db "Add your list!", 10
+
+list_sum:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, start_msg
+    mov rdx, 15
     syscall
 
-_start:
     mov rax, 0
     mov rdi, 0
     mov rsi, input_buffer
@@ -34,7 +38,7 @@ _start:
     mov r15, 0
     call get_arr_sum
 
-    call end
+    ret
 
 get_arr_sum:
     add r14, [arr+r15*8]

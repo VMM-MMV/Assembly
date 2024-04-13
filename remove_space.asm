@@ -1,17 +1,18 @@
 section .data
     input_buffer times 100 db 0
     counter dq 0
-    start_msg db "Remove your spaces brother!", 10
-    start_msg_len equ $-start_msg
-
+    
 section .text
     global remove_space
+    
+start_msg:
+    db "Remove your spaces brother!", 10
 
 remove_space:
     mov rax, 1
     mov rdi, 1
     mov rsi, start_msg
-    mov rdx, start_msg_len
+    mov rdx, 28
     syscall
 
     mov rax, 0

@@ -3,17 +3,19 @@ section .data
     replace_buffer times 10 db 0
     replace_with_buffer times 10 db 0
     counter dq 0
-    start_msg db "Replace Your Strings Brother!", 10
-    start_msg_len equ $-start_msg
+    
 
 section .text
     global replace_str
+
+start_msg:
+    db "Replace Your Strings Brother!", 10
 
 replace_str:
     mov rax, 1
     mov rdi, 1
     mov rsi, start_msg
-    mov rdx, start_msg_len
+    mov rdx, 30
     syscall
 
     mov rax, 0
