@@ -9,6 +9,7 @@ section .text
     extern random_string
     extern replace_str
     extern average_of_list
+    extern sort_list_desc
 
 end:
     mov rax, 60
@@ -91,7 +92,10 @@ _start:
 
     cmp byte [input_buffer], "7"
     je average_of_list_jmp
-    
+
+    cmp byte [input_buffer], "8"
+    je sort_list_desc_jmp
+
 
     jmp end
 
@@ -123,4 +127,9 @@ replace_str_jmp:
 average_of_list_jmp:
     call clear_screen
     call average_of_list
+    jmp retry
+
+sort_list_desc_jmp:
+    call clear_screen
+    call sort_list_desc
     jmp retry
