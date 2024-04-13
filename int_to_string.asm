@@ -5,7 +5,13 @@ section .data
     strr dd 0
 
 section .text
-    global int_to_string
+    global _start
+
+_start:
+    mov rax, 100
+    call int_to_string
+    mov rax, 60
+    mov rdi, 420
 
 int_to_string:
     mov rdx, 0
