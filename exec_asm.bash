@@ -26,8 +26,9 @@ elif [ "$1" = "-m" ]; then
     nasm -f elf64 -g "$1.asm" -o "$1.o"
     nasm -f elf64 -g "concat.asm" -o "concat.o"
     nasm -f elf64 -g "len_of_input.asm" -o "len_of_input.o"
+    nasm -f elf64 -g "remove_space.asm" -o "remove_space.o"
     # Link the object files
-    gcc -g -no-pie -nostartfiles "$1.o" concat.o len_of_input.o -o "$1"
+    gcc -g -no-pie -nostartfiles "$1.o" concat.o len_of_input.o remove_space.o -o "$1"
     ./"$1"
 else
     # Assemble the assembly code

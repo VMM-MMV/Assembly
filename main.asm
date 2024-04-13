@@ -5,6 +5,7 @@ section .text
     global _start
     extern concat
     extern len_of_input
+    extern remove_space
 
 end:
     mov rax, 60
@@ -76,6 +77,9 @@ _start:
     cmp byte [input_buffer], "2"
     je len_of_input_jmp
 
+    cmp byte [input_buffer], "3"
+    je remove_space_jmp
+
     jmp end
 
 concat_jmp:
@@ -86,4 +90,9 @@ concat_jmp:
 len_of_input_jmp:
     call clear_screen
     call len_of_input
+    jmp retry
+
+remove_space_jmp:
+    call clear_screen
+    call remove_space
     jmp retry

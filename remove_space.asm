@@ -1,13 +1,19 @@
 section .data
     input_buffer times 100 db 0
-    replace_buffer times 10 db 0
-    replace_with_buffer times 10 db 0
     counter dq 0
+    start_msg db "Remove your spaces brother!", 10
+    start_msg_len equ $-start_msg
 
 section .text
-    global _start
+    global remove_space
 
-_start:
+remove_space:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, start_msg
+    mov rdx, start_msg_len
+    syscall
+
     mov rax, 0
     mov rdi, 0
     mov rsi, input_buffer
@@ -24,23 +30,23 @@ _start:
     mov rdx, r10
     syscall
 
-    mov rax, 60
-    mov rdi, 0
-    syscall
-
-find_occurance:
-    mov r8, [counter]
-    mov r9, 32
-    cmp [input_buffer+r8], r9b
-    je replace_str
-
-    inc qword [counter]
-    cmp [counter], r10
-    jl find_occurance
     ret
 
-replace_str:
-    mov r11, 8
-    mov [input_buffer+r8], r11b
-    inc qword [counter] 
-    jmp find_occurance
+find_occurance:
+    mov qword [counter], 0
+    occurrence_loop:
+        mov r8, [counter]
+        mov r9, 32
+        cmp [input_buffer+r8], r9b
+        je replace_str
+
+        inc qword [counter]
+        cmp [counter], r10
+        jl occurrence_loop
+        ret
+
+    replace_str:
+        mov r11, 0
+        mov [input_buffer+r8], r11b
+        inc qword [counter] 
+        jmp occurrence_loop
