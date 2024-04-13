@@ -21,6 +21,14 @@ _start:
     mov rax, 100
     call int_to_string
 
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, strr
+    mov rdx, 10
+    syscall
+
+    call end
+
 int_to_string:
     mov rdx, 0
     mov rbx, 10
@@ -52,7 +60,6 @@ reversed_array_to_str:
 
 continue:
     dec qword [reversed_counter]
-    inc qword [counter]
     cmp qword [reversed_counter], -1
     jne reversed_array_to_str
     ret
@@ -70,17 +77,17 @@ is_zero:
         call continue
         ret
 
-
 add_zero:
     mov r10, [counter]
-    dec r10
     mov byte [strr+r10], 48
 
+    inc qword [counter]
     jmp is_zero_bod
 
 add_number:
     add r9, 48
     mov r10, [counter]
     mov [strr+r10], r9
-    
+
+    inc qword [counter]
     jmp is_zero_bod

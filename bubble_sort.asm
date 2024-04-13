@@ -1,7 +1,7 @@
 section .data    
     arr dq 1, 4, 3, 2
     ; arr dq 10 dup(0)
-    arr_len dq 0
+    arr_len dq 4
     arr_counter dq 0
     str_arr dq 10 dup(0)
     counter dq 0
@@ -63,8 +63,7 @@ swap:
 
 
 print_arr:
-    mov r15, 5
-    dec r15
+    mov r15, [arr_counter]
     mov rax, [arr+r15*8]
 
     call clean_int_to_string
@@ -82,8 +81,9 @@ print_arr:
     mov rdx, 1
     syscall
 
-    dec qword [arr_counter]
-    cmp qword [arr_counter], 0
+    inc qword [arr_counter]
+    mov r15, [arr_len]
+    cmp [arr_counter], r15
     jne print_arr
     ret
 
@@ -91,44 +91,68 @@ space:
     db " "
 
 int_to_string:
-    call clean_int_to_string
-    convert_loop:
-        mov rdx, 0
-        mov rbx, 10
+    mov rdx, 0
+    mov rbx, 10
 
-        div rbx                     ; divides rax by dbx
+    div rbx                     ; divides rax by dbx
 
-        mov r9, [counter]
-        mov [str_arr+r9*8], rdx
-        inc qword [counter]
-        cmp rax, 0
-        jne int_to_string
-        
-        mov qword [counter], 0
-        jmp reversed_array_to_str
-        ret
+    mov r9, [counter]
+    mov [str_arr+r9*8], rdx
+    inc qword [counter]
+    cmp rax, 0
+    jne int_to_string
+    
+    mov qword [counter], 0
+    call reversed_array_to_str
+    ret
 
 reversed_array_to_str:
     mov r9, [reversed_counter]
     mov r9, [str_arr+r9*8]
+    
+    cmp r8, -100
+    je is_zero
+
     cmp r9, 0
-    je continue
+    jne number_other_than_zero
 
-
-    add r9, 48
-    mov r10, [counter]
-    mov [strr+r10], r9
-    dec qword [reversed_counter]
-    inc qword [counter]
-    cmp qword [reversed_counter], -1
-    jne reversed_array_to_str
-    mov rax, strr
+    call continue
+    mov r8, -99
     ret
 
 continue:
     dec qword [reversed_counter]
-    inc qword [counter]
+    cmp qword [reversed_counter], -1
+    jne reversed_array_to_str
+    ret
+
+number_other_than_zero:
+    mov r8, -100
     jmp reversed_array_to_str
+
+is_zero:
+    cmp r9, 0
+    je add_zero
+
+    jmp add_number
+    is_zero_bod:
+        call continue
+        ret
+
+add_zero:
+    mov r10, [counter]
+    mov byte [strr+r10], 48
+
+    inc qword [counter]
+    jmp is_zero_bod
+
+add_number:
+    add r9, 48
+    mov r10, [counter]
+    mov [strr+r10], r9
+
+    inc qword [counter]
+    jmp is_zero_bod
 
 clean_int_to_string:
     mov r15, 0
