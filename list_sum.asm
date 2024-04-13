@@ -15,7 +15,32 @@ section .text
 start_msg:
     db "Add your list!", 10
 
+reset:
+    mov qword [counter], 0
+    mov qword [arr_counter], 0
+    mov qword [reversed_counter], 9
+
+    xor r8, r8
+    input_reset:
+        mov qword [input_buffer+r8], 0
+        inc r8
+
+        cmp qword r8, 100
+        jne input_reset
+        
+    xor r8, r8
+    arr_reset:
+        cmp qword r8, [arr_len]
+        jne arr_reset_bod
+    ret
+
+    arr_reset_bod:
+        mov qword [arr+r8*8], 0
+        inc r8
+        jmp arr_reset
+
 list_sum:
+    call reset
     mov rax, 1
     mov rdi, 1
     mov rsi, start_msg

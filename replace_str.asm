@@ -11,7 +11,35 @@ section .text
 start_msg:
     db "Replace Your Strings Brother!", 10
 
+reset:
+    xor r8, r8
+    input_reset:
+        mov qword [input_buffer+r8], 0
+        inc r8
+
+        cmp qword r8, 100
+        jne input_reset
+
+    xor r8, r8
+    replace_buffer_reset:
+        mov qword [replace_buffer+r8], 0
+        inc r8
+
+        cmp qword r8, 10
+        jne replace_buffer_reset
+        xor r8, r8
+    
+    xor r8, r8
+    replace_with_buffer_reset:
+        mov qword [replace_with_buffer+r8], 0
+        inc r8
+
+        cmp qword r8, 10
+        jne replace_with_buffer_reset
+    ret
+
 replace_str:
+    call reset
     mov rax, 1
     mov rdi, 1
     mov rsi, start_msg

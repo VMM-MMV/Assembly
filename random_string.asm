@@ -7,7 +7,20 @@ section .data
 section .text
     global random_string
 
+reset:
+    mov qword [counter], 0
+    xor r8, r8
+    string_reset:
+        mov qword [string+r8], 0
+        inc r8
+
+        cmp qword r8, 100
+        jne string_reset
+    ret
+
 random_string:
+    call reset
+
     call get_random_string
     mov r8, [len]
     inc r8

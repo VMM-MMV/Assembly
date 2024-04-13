@@ -10,7 +10,34 @@ section .bss
 section .text
     global concat
 
+reset:
+    xor r8, r8
+    first_word_buffer_reset:
+        mov qword [first_word_buffer+r8], 0
+        inc r8
+        
+        cmp qword r8, 100
+        jne first_word_buffer_reset
+
+    xor r8, r8
+    second_word_buffer_reset:
+        mov qword [second_word_buffer+r8], 0
+        inc r8
+
+        cmp qword r8, 100
+        jne second_word_buffer_reset
+
+    xor r8, r8
+    result_reset:
+        mov qword [result+r8], 0
+        inc r8
+
+        cmp qword r8, 100
+        jne result_reset
+    ret
+
 concat:
+    call reset
     mov rax, 1                              
     mov rdi, 1
     mov rsi, msg

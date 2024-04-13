@@ -8,7 +8,18 @@ section .text
 start_msg:
     db "Remove your spaces brother!", 10
 
+reset:
+    xor r8, r8
+    input_reset:
+        mov qword [input_buffer+r8], 0
+        inc r8
+
+        cmp qword r8, 100
+        jne input_reset
+    ret
+
 remove_space:
+    call reset
     mov rax, 1
     mov rdi, 1
     mov rsi, start_msg
@@ -51,3 +62,4 @@ find_occurance:
         mov [input_buffer+r8], r11b
         inc qword [counter] 
         jmp occurrence_loop
+    ret

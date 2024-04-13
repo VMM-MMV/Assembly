@@ -4,7 +4,6 @@ section .data
     counter dq 0
     reversed_counter dq 9
     strr dd 0
-    start_msg_len dq 0
 
 section .text
     global len_of_input
@@ -12,7 +11,19 @@ section .text
 start_msg:
     db "Find out looong yourr word is!", 10
 
+reset:
+    mov qword [counter], 0
+    xor r8, r8
+    input_reset:
+        mov qword [input_buffer+r8], 0
+        inc r8
+
+        cmp qword r8, 100
+        jne input_reset
+    ret
+
 len_of_input:
+    call reset
     mov rax, 1
     mov rdi, 1
     mov rsi, start_msg
