@@ -56,11 +56,11 @@ screen_clear_buffer:
     db 10, 10, 10, 10, 10, 10, 10, 10, 10
     
 clear_screen:
-    ; mov rax, 1
-    ; mov rdi, 1
-    ; mov rsi, screen_clear_buffer
-    ; mov rdx, 35
-    ; syscall
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, screen_clear_buffer
+    mov rdx, 35
+    syscall
     ret
 
 _start:
@@ -97,6 +97,9 @@ _start:
 
     cmp byte [input_buffer], "7"
     je sort_list_desc_jmp
+
+    cmp byte [input_buffer], "8"
+    je reverse_arr_jmp
 
     cmp byte [input_buffer], "9"
     je list_sum_jmp
