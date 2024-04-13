@@ -9,15 +9,19 @@ section .data
     reversed_counter dq 9
     strr dd 0
 
+    start_msg db "Add your list!", 10
+    start_msg_len equ $-start_msg
+
 section .text
-    global _start
+    global reverse_arr
 
-end:
-    mov rax, 60
-    mov rdi, 0
+reverse_arr:
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, start_msg
+    mov rdx, start_msg_len
     syscall
-
-_start:
+    
     mov rax, 0
     mov rdi, 0
     mov rsi, input_buffer
@@ -29,13 +33,13 @@ _start:
     mov r12, rax
     call string_to_array
 
-    call reverse_arr
+    call reverse_arr_func
 
     call print_arr
 
-    call end
+    ret
 
-reverse_arr:
+reverse_arr_func:
     mov r12, 0
     mov r13, 0
     mov r14, 0

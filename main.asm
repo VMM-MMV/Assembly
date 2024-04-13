@@ -10,6 +10,7 @@ section .text
     extern replace_str
     extern average_of_list
     extern sort_list_desc
+    extern reverse_arr
 
 end:
     mov rax, 60
@@ -96,6 +97,8 @@ _start:
     cmp byte [input_buffer], "8"
     je sort_list_desc_jmp
 
+    cmp byte [input_buffer], "9"
+    je reverse_arr_jmp
 
     jmp end
 
@@ -132,4 +135,9 @@ average_of_list_jmp:
 sort_list_desc_jmp:
     call clear_screen
     call sort_list_desc
+    jmp retry
+
+reverse_arr_jmp:
+    call clear_screen
+    call reverse_arr
     jmp retry
