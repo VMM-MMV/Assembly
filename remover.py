@@ -5,5 +5,6 @@ def clean_directory(path=os.getcwd()):
         for file in files:
             if file.endswith('.o') or "." not in file:
                 os.remove(os.path.join(root, file))
+        break
 
 clean_directory()
